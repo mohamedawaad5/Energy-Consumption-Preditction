@@ -15,7 +15,6 @@ public class TipsActivity extends AppCompatActivity {
 
         ListView lvTips = findViewById(R.id.lvTips);
 
-        // Sample tips
         String[] tips = {
                 "Unplug electronics when not in use.",
                 "Use energy-efficient light bulbs.",

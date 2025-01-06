@@ -35,12 +35,11 @@ public class TFLiteHelper {
 
     public float[] predict(float[] input) {
         try {
-            // Convert input to 2D array (e.g., [1][24])
             float[][][] inputArray = new float[1][10][1];
             for (int i = 0; i < 10; i++) {
                 inputArray[0][i][0] = input[i];
-            }            // Prepare output
-            float[][] output = new float[1][1]; // Adjust size based on the model's output
+            }
+            float[][] output = new float[1][1];
 
             for (int i = 0; i < interpreter.getInputTensorCount(); i++) {
                 int[] shape = interpreter.getInputTensor(i).shape();
@@ -58,9 +57,6 @@ public class TFLiteHelper {
             Log.d("Awaad", Arrays.toString(input));
             Log.d("Awaad", Arrays.toString(output[0]));
 
-            // Run inference
-
-            // Return the prediction(s) for the first instance
             return output[0];
         } catch (Exception e) {
             e.printStackTrace();

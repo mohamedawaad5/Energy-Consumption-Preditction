@@ -39,19 +39,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize Views
         lineChart = findViewById(R.id.lineChart);
         tvEnergyUsage = findViewById(R.id.tvEnergyUsage);
         btnFetchData = findViewById(R.id.btnFetchData);
         btnViewTips = findViewById(R.id.btnViewTips);
 
-        // Initialize Chart
         setupLineChart();
 
-        // Add Fetch Button Listener
         btnFetchData.setOnClickListener(v -> {
-            // Fetch data and update chart (simulate for now)
-            s();
+            startRealTimeData();
         });
 
         btnViewTips.setOnClickListener(v -> {
@@ -65,28 +61,11 @@ public class MainActivity extends AppCompatActivity {
         lineChart.getAxisRight().setEnabled(false);
     }
 
+
     private void simulateDataFetch() {
-        // Simulate data points
-        List<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < 24; i++) { // 24 hours
-            entries.add(new Entry(i, (float) (Math.random() * 10 + 5))); // Random values
-        }
-
-        LineDataSet dataSet = new LineDataSet(entries, "Energy Usage (kWh)");
-        dataSet.setColor(ContextCompat.getColor(this, R.color.purple_500));
-        dataSet.setCircleColor(ContextCompat.getColor(this, R.color.purple_500));
-        LineData lineData = new LineData(dataSet);
-
-        lineChart.setData(lineData);
-        lineChart.invalidate(); // Refresh chart
-    }
-
-
-    private void s() {
         try {
-            TFLiteHelper tfLiteHelper = new TFLiteHelper("model_with_flex_ops_2.tflite", getAssets());
+            TFLiteHelper tfLiteHelper = new TFLiteHelper("model_with_flex_ops_3.tflite", getAssets());
 
-            // Replace with TFLite predictions
             float[] input = new float[24];
             for (int i = 0; i < 24; i++) {
                 input[i] = (float) Math.random() * 10 + 5;
@@ -94,8 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
             float[] prediction = tfLiteHelper.predict(input);
 
-            // Add prediction as the next point in the chart
-            cumulativeEntries.add(new Entry(nextTimeStamp, prediction[0])); // Append to cumulative entries
+            cumulativeEntries.add(new Entry(nextTimeStamp, prediction[0]));
 
             LineDataSet dataSet = new LineDataSet(cumulativeEntries, "Energy Usage (kWh)");
             dataSet.setColor(ContextCompat.getColor(this, R.color.purple_500));
@@ -116,9 +94,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (realTimeEnabled) {
-                    // Add new random data points
-                    s();
-                    handler.postDelayed(this, 5000); // Refresh every 5 seconds
+                    simulateDataFetch();
+                    handler.postDelayed(this, 5000);
                 }
             }
         }, 5000);
@@ -138,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        realTimeEnabled = false; // Ensure updates are disabled during pause
+        realTimeEnabled = false;
         handler.removeCallbacksAndMessages(null);
     }
 }

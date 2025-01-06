@@ -14,7 +14,6 @@ public class DataHelper {
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
-        // Convert list to a comma-separated string
         StringBuilder dataStr = new StringBuilder();
         for (Float value : data) {
             dataStr.append(value).append(",");
